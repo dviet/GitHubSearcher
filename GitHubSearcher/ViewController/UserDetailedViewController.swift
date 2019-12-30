@@ -12,7 +12,7 @@ import Alamofire
 import SwiftyJSON
 import OAuthSwift
 
-class UserDetailedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class UserDetailedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UISearchBarDelegate {
     
     @IBOutlet weak var userImage: UIImageView!
     @IBOutlet weak var userName: UILabel!
@@ -26,6 +26,7 @@ class UserDetailedViewController: UIViewController, UITableViewDelegate, UITable
     @IBOutlet weak var repoListView: UITableView!
     
     var repoInformation: [RepoDetails] = [RepoDetails]()
+    var userRepoInformation: [RepoDetails] = [RepoDetails]()
     var defaultSelectedUser: String = ""
     
     public struct UserDetails {
@@ -50,6 +51,7 @@ class UserDetailedViewController: UIViewController, UITableViewDelegate, UITable
         customizeUI()
         getUserDetails()
         getRepoDetails()
+        repoSearchBar.delegate = self
     }
     
     func customizeUI() {
@@ -57,72 +59,6 @@ class UserDetailedViewController: UIViewController, UITableViewDelegate, UITable
         self.navigationController?.navigationBar.titleTextAttributes?.updateValue(UIFont.systemFont(ofSize: 20.0), forKey: NSAttributedString.Key.font)
         self.navigationController?.navigationBar.topItem?.title = ""
     }
-    
-    
-    //    func getUserDetails(){
-    //        do {
-    //            if let file = Bundle.main.url(forResource: "userInformation", withExtension: "json") {
-    //                let data = try Data(contentsOf: file)
-    //                let json = try JSONSerialization.jsonObject(with: data, options: [])
-    //                if let object = json as? [Any] {
-    //                    for obj in object {
-    //                        var details = obj as? [String: Any]
-    //                        userName.text =  details?["name"] as? String
-    //                        userEmail.text = "rakeshneela@outlook.com"//details?["email"] as? String
-    //                        userLocation.text = details?["location"] as? String
-    //                        userJoinDate.text = details?["created_at"] as? String
-    //                        //                        var num = details?["following"] as? Int
-    //                        if let num = details?["following"] as? Int {
-    //                            userFollowings.text =  "\(String(describing: num)) Following"
-    //                        }
-    //                        if let num = details?["followers"] as? Int {
-    //                            userFollowers.text =  "\(String(describing: num)) Followers"
-    //                        }
-    //                        let url = URL(string: details?["avatar_url"] as! String)
-    //                        DispatchQueue.global().async {
-    //                            let data = try? Data(contentsOf: url!)
-    //                            DispatchQueue.main.async {
-    //                                let image = UIImage(data: data!)
-    //                                self.userImage.image = image
-    //                            }
-    //                        }
-    //                        userDescription.text = "This is Rakesh executing program" //details?["bio"] as? String
-    //                    }
-    //                } else {
-    //                    print("JSON is invalid")
-    //                }
-    //            } else {
-    //                print("no file")
-    //            }
-    //        } catch {
-    //            print(error.localizedDescription)
-    //        }
-    //    }
-    
-    //    func getRepoDetails(){
-    //        do {
-    //            if let file = Bundle.main.url(forResource: "userRepos", withExtension: "json") {
-    //                let data = try Data(contentsOf: file)
-    //                let json = try JSONSerialization.jsonObject(with: data, options: [])
-    //                if let object = json as? [Any] {
-    //                    for obj in object {
-    //                        var details = obj as? [String: Any]
-    //                        let objDetail = RepoDetails(name: details?["name"] as! String,
-    //                                                    forkCount: details?["forks_count"] as! Int,
-    //                                                    starCount: details?["open_issues"] as! Int)
-    //                        print(objDetail)
-    //                        self.repoInformation.append(objDetail)
-    //                    }
-    //                } else {
-    //                    print("JSON is invalid")
-    //                }
-    //            } else {
-    //                print("no file")
-    //            }
-    //        } catch {
-    //            print(error.localizedDescription)
-    //        }
-    //    }
     
     func getUserDetails() {
         let todoEndpoint: String = "https://api.github.com/users/\(defaultSelectedUser)?client_id=0672968a79a44ead81d0&client_secret=39e627f2d0e910d6f7bbcc60b1c4cd7417eea96a"
@@ -192,6 +128,7 @@ class UserDetailedViewController: UIViewController, UITableViewDelegate, UITable
                                                 forkCount: json[i]["forks_count"] as! Int,
                                                 starCount: json[i]["stargazers_count"] as! Int)
                     self.repoInformation.append(objDetail)
+                    self.userRepoInformation.append(objDetail)
                 }
                 self.repoListView.reloadData()
         }
@@ -212,5 +149,14 @@ class UserDetailedViewController: UIViewController, UITableViewDelegate, UITable
         return UITableViewCell()
     }
     
+    // Search Bar
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        repoInformation = userRepoInformation
+        
+        if searchText.isEmpty == false {
+            repoInformation = userRepoInformation.filter({ $0.name.contains((searchText)) })
+        }
+        repoListView.reloadData()
+    }
     
 }

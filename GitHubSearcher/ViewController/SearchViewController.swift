@@ -17,9 +17,9 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var userSearchBar: UISearchBar!
     @IBOutlet weak var userListView: UITableView!
     var userInformation: [UserDetails] = [UserDetails]()
-    var searchActive : Bool = false
     var filtered:[String] = []
     var totalUserIds: [String] = []
+    var totalUserNames: [UserDetails] = [UserDetails]()
     
     public struct UserDetails {
         public var userName: String
@@ -107,43 +107,10 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     }
                     let objDetail = UserDetails(userName: userName, numberOfRepos: numberOfRepos, imageURL: imageURL)
                     self.userInformation.append(objDetail)
+                    self.totalUserNames.append(objDetail)
                     self.userListView.reloadData()
             }
         }
-    }
-    
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        searchActive = true;
-    }
-    
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        searchActive = false;
-    }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchActive = false;
-    }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchActive = false;
-    }
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        //        var data: [String]
-        //        for i in 0..<totalUserIds.count {
-        //            data[i] = totalUserIds[i]
-        //        }
-        //        filtered = data.filter({ (text) -> Bool in
-        //        let tmp: String = text as String
-        //        let range = tmp.rangeOfString(searchText, options: NSString.CompareOptions.CaseInsensitiveSearch)
-        //                    return range.location != NSNotFound
-        //        })
-        if(filtered.count == 0){
-            searchActive = false;
-        } else {
-            searchActive = true;
-        }
-        self.userListView.reloadData()
     }
     
     override func didReceiveMemoryWarning() {
@@ -183,6 +150,16 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
         guard let vc = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "UserDetailVC") as? UserDetailedViewController else { return }
         vc.defaultSelectedUser = totalUserIds[indexPath.row]
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    // Search Bar
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        userInformation = totalUserNames
+        
+        if searchText.isEmpty == false {
+            userInformation = totalUserNames.filter({ $0.userName.contains((searchText)) })
+        }
+        userListView.reloadData()
     }
 }
 
