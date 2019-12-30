@@ -23,7 +23,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>GitHubSearcher</string>
+				<string>Searcher</string>
 			</array>
 		</dict>
 	</array>

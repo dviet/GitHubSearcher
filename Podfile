@@ -6,6 +6,7 @@ target 'GitHubSearcher' do
   use_frameworks!
 
   # Pods for GitHubSearcher
+  pod 'Alamofire'
+  pod 'SwiftyJSON'
   pod 'OAuthSwift'
-  
 end
