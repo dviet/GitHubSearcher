@@ -29,22 +29,7 @@ class UserDetailedViewController: UIViewController, UITableViewDelegate, UITable
     var userRepoInformation: [RepoDetails] = [RepoDetails]()
     var defaultSelectedUser: String = ""
     
-    public struct UserDetails {
-        public var userName: String
-        public var userEmail: String
-        public var userLocation: String
-        public var userJoinDate: String
-        public var userFollowers: String
-        public var userFollowing: String
-        public var imageURL: String
-        public var userDescription: String
-    }
     
-    public struct RepoDetails {
-        public var name: String
-        public var forkCount: Int
-        public var starCount: Int
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -21,12 +21,6 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var totalUserIds: [String] = []
     var totalUserNames: [UserDetails] = [UserDetails]()
     
-    public struct UserDetails {
-        public var userName: String
-        public var numberOfRepos: Int
-        public var imageURL: String
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         getListOfUsers()
